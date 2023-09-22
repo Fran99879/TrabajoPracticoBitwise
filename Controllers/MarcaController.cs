@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using TrabajoPracticoBit.DAL.Implementaciones;
 using TrabajoPracticoBit.DAL.Interfaces;
 using TrabajoPracticoBit.DTO;
 using TrabajoPracticoBit.Models;
@@ -36,13 +34,10 @@ namespace TrabajoPracticoBit.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<IEnumerable<MarcaCreacionDTO>>> Obtener(int id)
         {
-
             var marcas = await _repository.Obtener(id);
-            if (marcas == null)
-                return NotFound();
-
             var marcasDTO = _mapper.Map<MarcaDTO>(marcas);
             return Ok(marcasDTO);
+
 
         }
 
@@ -50,6 +45,7 @@ namespace TrabajoPracticoBit.Controllers
         [HttpGet("marcaConProductos")]
         public async Task<ActionResult<IEnumerable<MarcaDTO>>> ObtenerConProductos()
         {
+
             var marcasConPro = await _marcaRepository.ObtenerConProductos();
             var marcasConProDTO = _mapper.Map<IEnumerable<MarcaDTO>>(marcasConPro);
             return Ok(marcasConProDTO);
@@ -59,6 +55,7 @@ namespace TrabajoPracticoBit.Controllers
         [HttpPost]
         public async Task<ActionResult> Crear(MarcaCreacionDTO marcaCreacionDTO)
         {
+
             var marca = _mapper.Map<Marca>(marcaCreacionDTO);
 
             await _repository.Insertar(marca);
@@ -66,6 +63,7 @@ namespace TrabajoPracticoBit.Controllers
             var marcaDTO = _mapper.Map<MarcaDTO>(marca);
 
             return Ok(marcaDTO);
+
 
         }
 

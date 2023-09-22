@@ -52,8 +52,8 @@ namespace TrabajoPracticoBit.Controllers
         }
 
         //[ResponseCache(Duration = 15)]   //Cache manual
-        //[ResponseCache(CacheProfileName = "PorDefecto")]  //Cache generico
-        [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)] //Para que no me guarde los erros en  la cache
+        [ResponseCache(CacheProfileName = "PorDefecto")]  //Cache generico
+        //[ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)] //Para que no me guarde los erros en  la cache
         [HttpGet("DataRelacionada{id}")]
         public async Task<ActionResult<ProductoDTO>>ObtenerDataRelacionada(int id)
         {
@@ -68,12 +68,17 @@ namespace TrabajoPracticoBit.Controllers
         [HttpPost]
         public async Task<ActionResult> Crear(ProductoCreacionDTO productoCreacionDTO)
         {
-            var producto = _mapper.Map<Producto>(productoCreacionDTO);
-            await _repository.Insertar(producto);
+            try
+            {
+                var producto = _mapper.Map<Producto>(productoCreacionDTO);
+                await _repository.Insertar(producto);
 
-            var productoDto = _mapper.Map<ProductoDTO>(producto);
-            return CreatedAtAction(nameof(Obtener), new { id = producto.Id }, productoDto);
-
+                var productoDto = _mapper.Map<ProductoDTO>(producto);
+                return CreatedAtAction(nameof(Obtener), new { id = producto.Id }, productoDto);
+            }catch (Exception ex)
+            {
+                return BadRequest("Error al crear producto   " + ex.Message);
+            }
         }
         [Authorize(Roles = "admin")]
         [HttpPut("{id}")]
